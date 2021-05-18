@@ -4,61 +4,21 @@ import Board from './Board.js';
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   squares: [
-    //     Array(9).fill(null),
-    //   ],
-    //   currentIndex: [ 0 ],
-    //   step: 0,
-    // };
     this.state = {
-      // squares: Array(9).fill(null)
       history: [{
-        squares: Array(9).fill(null),
+        squares: Array(9).fill(null).map((item) => {
+          return {
+            value: null,
+            coordinate: {
+              x: null,
+              y: null
+            },
+            target: false,
+          }
+        }),
       }],
       xIsNext: true,
       stepNumber: 0
-    }
-  }
-
-
-  handleChange({ index }) {
-    // const data = this.state.squares.slice();
-    // const currentData = data[data.length? data.length- 1 : 0];
-    // const currentIndex = this.props.currentIndex.slice();
-    // currentIndex.push(currentIndex[currentIndex.length -1] + 1);
-    // currentData[index] = 'X';
-    // this.setState({ currentIndex });
-
-    // this.setState({ squares :data});
-
-    // this.setState({ squares :data});
-    // const data = this.state.squares.slice();
-    // data.splice(index, 1, 'X')
-    // this.setState({ squares :data});
-
-
-
-  };
-
-  handleInput(e) {
-    const val = e.target.value;
-    const currentIndex = this.props.currentIndex.slice();
-    currentIndex.push(val);
-    this.setState({ currentIndex })
-  }
-
-  handleOneStep(mark) {
-    if (mark === 'cancel') {
-      this.setState({ step: this.state.step - 1 })
-
-    } else {
-      if (this.state.step < this.state.squares.length) {
-        this.setState({ step: this.state.step + 1 })
-      } else {
-        this.setState({ step: this.state.step })
-      }
-
     }
   }
 
@@ -76,7 +36,7 @@ class Game extends React.Component {
     ];
     for (let i = 0; i < lines.length; i++) {
       const [a, b, c] = lines[i];
-      if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      if (squares[a].value && squares[a].value === squares[b].value && squares[a].value === squares[c].value) {
         return squares[a];
       }
     }
@@ -84,15 +44,27 @@ class Game extends React.Component {
   }
   // 点击函数
   handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history1 = this.state.history.slice(0, this.state.stepNumber + 1);
+    const history = JSON.parse(JSON.stringify(history1))
     const current = history[history.length - 1];
-    const squares = current.squares.slice();
-    if (this.calculateWinner(squares) || squares[i]) {
+    const row = Math.trunc(i/3) + 1
+    const column = i%3 + 1;
+    let squares = current.squares.slice();
+    if (this.calculateWinner(squares) || squares[i].value) {
       return;
     }
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    squares[i].value = this.state.xIsNext ? 'X' : 'O';
+    squares[i].coordinate = {
+      x: row,
+      y: column
+    }
+    squares = squares.map((item) => {
+      item.target = false;
+      return item;
+    })
+    squares[i].target = true;
     this.setState({
-      history: history.concat([{
+      history: history1.concat([{
         squares: squares,
       }]),
       stepNumber: history.length,
@@ -111,6 +83,7 @@ class Game extends React.Component {
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
+
     const winner = this.calculateWinner(current.squares);
     let status;
     if (winner) {
@@ -119,17 +92,23 @@ class Game extends React.Component {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
     const moves = history.map((step, move) => {
-      console.log(step, move, 'moves');
+      const { squares } = step;
+      const tar = squares.find((item) => item.target)
+      const coordinate = { x: null, y: null}
+      if(tar) {
+        coordinate.x = tar.coordinate.x;
+        coordinate.y = tar.coordinate.y;
+      }
       const desc = move ?
       'Go to move #' + move :
       'Go to game start';
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
+          <div>行：{ coordinate.x } 列：{ coordinate.y}</div>
         </li>
       );
     })
-    console.log(moves, 'moves-00')
     return (
       <div className="game">
         <div className="game-board">
