@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Game from './Game.js'
+// import Game from './Game.js'
+import Tree from './components/tree'
 
 ReactDOM.render(
-  <Game />,
+  <Tree />,
   document.getElementById('root')
 );

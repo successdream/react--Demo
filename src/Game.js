@@ -1,5 +1,7 @@
 import React from 'react';
 import Board from './Board.js';
+import TestExport from './testExport';
+import Buttons from './Buttons'
 
 class Game extends React.Component {
   constructor(props) {
@@ -111,20 +113,22 @@ class Game extends React.Component {
     })
     return (
       <div className="game">
-        <div className="game-board">
+        {/* <TestExport/> */}
+        <Buttons/>
+        {/* <div className="game-board">
           <Board
             data={current.squares}
             onClick={(i) => this.handleClick(i)} />
-        </div>
-        <div className="game-info">
-          <div> 当前步数：{/* status */}</div>
+        </div> */}
+        {/* <div className="game-info">
+          <div> 当前步数：</div>
           <div>
             <div>{status}</div>
           </div>
           <ol>
             {moves}
           </ol>
-        </div>
+        </div> */}
       </div>
     );
   }

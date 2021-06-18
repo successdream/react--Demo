@@ -1,17 +1,21 @@
 
 import React from 'react';
-import Square from './Square.js'
+import Square from './Square.js';
+import Test from './test.js'
 class Board extends React.Component {
   // 问题1 遍历DOM节点的方法
   // 问题2 子组件改变父组件的数据的方法
-  // constructor(props) {
-  //   super(props)
-  //   this.state = {
-  //     squares: Array(9).fill(null),
-  //     xIsNext: true,
-  //   }
-
-  // }
+  constructor(props) {
+    super(props)
+    this.state = {
+      squares: Array(9).fill(null),
+      xIsNext: true,
+      inputValue: 2
+    }
+    this.clickFn = this.clickFn.bind(this)
+    this.counter = 1;
+    this.ref = React.createRef();
+  }
   renderSquare(i) {
     return (
     <Square  
@@ -21,9 +25,34 @@ class Board extends React.Component {
     );
   }
 
+  clickFn(e) {
+    // console.log(this, 'this')
+    this.counter++ 
+    // console.log(this.counter, 'this.counter-000')
+    // this.setState({ newAddValue: this.counter })
+    this.setState({ inputValue: this.counter})
+  }
+  componentDidMount() {
+    // const dom = this.ref.current.click()
+    // console.log(dom, 'dom-000')
+  }
+
   render() {
+    const { newAddValue } = this.state
     return (
+      
       <div>
+        <div>
+          <Square/>
+        </div>
+        {/* <div>
+          <Test testRef={this.ref} left={<div>我是left</div> } right={ <div>我是right</div>}>
+              <div>我是slot</div>
+          </Test>
+        </div> */}
+        {/* <button onClick={this.clickFn}>按钮1</button>
+        <input type="text" value={ this.state.inputValue} onChange={this.clickFn } />
+        <div> { newAddValue } </div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -38,7 +67,7 @@ class Board extends React.Component {
           {this.renderSquare(6)}
           {this.renderSquare(7)}
           {this.renderSquare(8)}
-        </div>
+        </div> */}
       </div>
     );
   }
